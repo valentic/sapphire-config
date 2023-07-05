@@ -6,3 +6,6 @@
 
 2023-06-17  Todd Valentic
     - Convert to use pyproject.toml
+
+2023-07-05  Todd Valentic
+    - Release 1.0.0

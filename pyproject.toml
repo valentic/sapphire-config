@@ -16,7 +16,7 @@ authors = [
 
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: GNU Public License v3 (GPLv3)",
+    "License :: OSI Approved :: MIT License", 
     "Operating System :: OS Independent"
 ]
 
@@ -37,8 +37,7 @@ devel = [
     ]
 
 [project.urls]
-homepage="https://github.com/valentic/sapphireconfig"
-repository="https://github.com/valentic/sapphireconfig"
+Homepage="https://github.com/valentic/sapphire-config"
 
 [tool.setuptools.packages.find]
 where = ["src"]

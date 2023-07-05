@@ -1,0 +1,5 @@
+include README.rst CHANGES.txt LICENSE
+global-exclude *.pyc
+graft tests
+graft docs
+graft examples

@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+
+name = "sapphire_config"
+dynamic = ["version"]
+description = "Sapphire Configuration Parser"
+readme = "README.rst"
+requires-python= ">= 3.9"
+license = { file = "LICENSE" }
+authors = [
+    { name= 'Todd Valentic', email='todd.valentic@gmail.com' }
+]
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU Public License v3 (GPLv3)",
+    "Operating System :: OS Independent"
+]
+
+dependencies = [
+    "dateutils",
+    "humanfriendly",
+    "pytimeparse2"
+]
+
+[project.optional-dependencies]
+devel = [
+    'build',
+    'black',
+    'pyfakefs',
+    'pylint',
+    'pytest',
+    'ruff'
+    ]
+
+[project.urls]
+homepage="https://github.com/valentic/sapphireconfig"
+repository="https://github.com/valentic/sapphireconfig"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.dynamic]
+version = {attr = "sapphire_config.metadata.__version__"}
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib"
+]
+

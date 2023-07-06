@@ -9,3 +9,7 @@
 
 2023-07-05  Todd Valentic
     - Release 1.0.0
+
+2023-07-05  Todd Valentic
+    - Fix python-dateutil dependency
+    - Release 1.0.1

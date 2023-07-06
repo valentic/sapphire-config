@@ -21,7 +21,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "dateutils",
+    "python-dateutil",
     "humanfriendly",
     "pytimeparse2"
 ]

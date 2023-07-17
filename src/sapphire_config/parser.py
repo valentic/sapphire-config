@@ -13,6 +13,9 @@
 #   2023-06-17  Todd Valentic
 #               PEP8 compliance
 #
+#   2023-07-17  Todd Valentic
+#               Change Rate offset default to 0 from None
+#
 ##########################################################################
 
 import configparser as cp
@@ -34,6 +37,7 @@ import pytimeparse2 as pytimeparse
 
 UNSET = cp._UNSET
 
+
 class Rate:
     """Repeating event specification"""
 
@@ -41,7 +45,7 @@ class Rate:
         self,
         period: datetime.timedelta,
         sync: bool = False,
-        offset: datetime.timedelta = None,
+        offset: datetime.timedelta = 0,
         at_start: bool = False,
     ):
         self.period = period
@@ -196,7 +200,7 @@ class NestedInterpolation(cp.Interpolation):
         if "%(" in value:
             raise cp.InterpolationDepthError(option, section, rawval)
 
-        value = value.replace('%%', '%')
+        value = value.replace("%%", "%")
 
         return value
 
@@ -287,7 +291,7 @@ class Parser(cp.ConfigParser):
         else:
             period = fallback
             sync = False
-            offset = None
+            offset = 0
             at_start = False
 
         proxy = self[section]

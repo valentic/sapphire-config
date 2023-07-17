@@ -13,3 +13,7 @@
 2023-07-05  Todd Valentic
     - Fix python-dateutil dependency
     - Release 1.0.1
+
+2023-07-17  Todd Valentic
+    - Change Rate offset default to be 0 instead of None
+    - Release 1.0.2

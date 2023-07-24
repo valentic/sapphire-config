@@ -441,6 +441,66 @@ def test_get_rate_fallback_rate():
     result = config['section'].get_rate('missing', fallback=rate)
     assert result == rate
 
+def test_rate_init_default():
+    rate = sapphire.Rate(0)
+
+    assert isinstance(rate.period, datetime.timedelta) 
+    assert isinstance(rate.offset, datetime.timedelta)
+    assert rate.period.total_seconds() == 0
+    assert rate.offset.total_seconds() == 0
+    assert rate.sync == False
+    assert rate.at_start == False
+
+def test_rate_init_timedelta():
+    period = datetime.timedelta(0)
+    offset = datetime.timedelta(0)
+    rate = sapphire.Rate(period, offset)
+
+    assert isinstance(rate.period, datetime.timedelta) 
+    assert isinstance(rate.offset, datetime.timedelta)
+    assert rate.period.total_seconds() == 0
+    assert rate.offset.total_seconds() == 0
+
+def test_rate_nexttime():
+    rate = sapphire.Rate(60, sync=False)
+
+    curtime = datetime.datetime(2001, 1, 1, 0, 0, 5)
+
+    wait = rate.nexttime(curtime)
+    assert wait.total_seconds() == 60 
+
+def test_rate_nexttime_sync():
+    rate = sapphire.Rate(60, sync=True)
+
+    curtime = datetime.datetime(2001, 1, 1, 0, 0, 5)
+
+    wait = rate.nexttime(curtime)
+    assert wait.total_seconds() == 55 
+
+def test_rate_nexttime_offset():
+    rate = sapphire.Rate(60, offset=10)
+
+    curtime = datetime.datetime(2001, 1, 1, 0, 0, 5)
+
+    wait = rate.nexttime(curtime)
+    assert wait.total_seconds() == 60 
+
+def test_rate_nexttime_offset_sync():
+    rate = sapphire.Rate(60, offset=10, sync=True)
+
+    curtime = datetime.datetime(2001, 1, 1, 0, 0, 5)
+
+    wait = rate.nexttime(curtime)
+    assert wait.total_seconds() == 5 
+
+def test_rate_nexttime_offset_sync2():
+    rate = sapphire.Rate(60, offset=10, sync=True)
+
+    curtime = datetime.datetime(2001, 1, 1, 0, 0, 15)
+
+    wait = rate.nexttime(curtime)
+    assert wait.total_seconds() == 55
+
 def test_get_components():
     config = sapphire.Parser()
     config['section'] = {}

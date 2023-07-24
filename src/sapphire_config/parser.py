@@ -16,6 +16,9 @@
 #   2023-07-17  Todd Valentic
 #               Change Rate offset default to 0 from None
 #
+#   2023-07-24  Todd Valentic
+#               Add Rate.nexttime()
+#
 ##########################################################################
 
 import configparser as cp
@@ -23,6 +26,8 @@ import datetime
 import importlib
 import pathlib
 import re
+
+from typing import Union
 
 from dateutil.relativedelta import relativedelta
 import dateutil.parser
@@ -43,11 +48,17 @@ class Rate:
 
     def __init__(
         self,
-        period: datetime.timedelta,
+        period: Union[int, float, datetime.timedelta],
         sync: bool = False,
-        offset: datetime.timedelta = 0,
+        offset: Union[int, float, datetime.timedelta] = 0,
         at_start: bool = False,
     ):
+        if isinstance(period, (float, int)):
+            period = datetime.timedelta(seconds=period)
+
+        if isinstance(offset, (float, int)):
+            offset = datetime.timedelta(seconds=offset)
+
         self.period = period
         self.sync = sync
         self.offset = offset
@@ -58,7 +69,7 @@ class Rate:
             f"<Rate "
             f"period={self.period}, "
             f"sync={self.sync}, "
-            f"offset={self.period}, "
+            f"offset={self.offset}, "
             f"at_start={self.at_start}"
             f">"
         )
@@ -71,7 +82,19 @@ class Rate:
             and self.at_start == other.at_start
         )
 
+    def nexttime(self, curtime: datetime.datetime):
+        """Seconds until next deadline""" 
 
+        period = self.period.total_seconds()
+
+        if self.sync:
+            timestamp = (curtime - self.offset).timestamp() 
+            wait = period - timestamp % period
+        else:
+            wait = period
+
+        return datetime.timedelta(seconds = wait)
+        
 # -------------------------------------------------------------------------
 #   Converters
 # -------------------------------------------------------------------------

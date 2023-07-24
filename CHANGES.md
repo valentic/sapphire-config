@@ -17,3 +17,9 @@
 2023-07-17  Todd Valentic
     - Change Rate offset default to be 0 instead of None
     - Release 1.0.2
+
+2023-07-24  Todd Valentic
+    - Add Rate.nexttime()
+    - Allow int, float or timedelta in Rate constructor
+    - Fix Rate repr (period was shown for offset)
+    - Release 1.0.3

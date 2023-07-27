@@ -18,6 +18,15 @@ class Factory(sapphire.Component):
     def __init__(self, *p, **kw):
         super().__init__('component', *p, **kw)
 
+class FactorySet(sapphire.Component):
+    """Test component set"""
+
+    def __init__(self, *p, **kw):
+        super().__init__("component", *p, **kw)
+
+        self.config.set("setname", f"setname.{self.name}") 
+
+
 def test_get_parser():
     config = sapphire.Parser()
     config['section'] = {}
@@ -516,6 +525,24 @@ def test_get_components_proxy():
 
     result = config['section'].get_components('components', factory=Factory)
     assert isinstance(result, dict)
+
+def test_component_set():
+    config = sapphire.Parser()
+    config['section'] = {}
+    config['section']['components'] = 'a b'
+
+    result = config.get_components('section', 'components', factory=FactorySet)
+    assert result['a'].config.get('setname') == "setname.a" 
+
+def test_component_options():
+    config = sapphire.Parser()
+    config['section'] = {}
+    config['section']['components'] = 'a'
+
+    c = config.get_components('section', 'components', factory=FactorySet)
+    options = c['a'].config.options()
+
+    assert options == ['name', 'component', 'setname', 'components'] 
 
 def test_get_callback():
     config = sapphire.Parser()

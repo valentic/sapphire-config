@@ -23,3 +23,8 @@
     - Allow int, float or timedelta in Rate constructor
     - Fix Rate repr (period was shown for offset)
     - Release 1.0.3
+
+2023-07-25  Todd Valentic
+    - Add set() and options() to component config
+    - Remove getter mapping, use config 
+    - Release 1.0.4

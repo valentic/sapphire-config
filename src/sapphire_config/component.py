@@ -79,7 +79,13 @@
 #                   component. Allows for the reuse of features without
 #                   any new machinery.
 #
+#   2023-7-25   Todd Valentic
+#               Add set() and options() to config
+#               Remove get() mapping, use config
+#
 ##########################################################################
+
+from functools import partial
 
 from .parser import Parser
 
@@ -132,12 +138,8 @@ class Component:
         proxy["name"] = name
         proxy[prefix] = name
 
-        # Map the get*() methods onto object
-
-        for key in dir(proxy):
-            method = getattr(proxy, key)
-            if callable(method) and key.startswith("get"):
-                setattr(self, key, method)
+        proxy.set = partial(proxy.parser.set, proxy.name)
+        proxy.options = partial(proxy.parser.options, proxy.name) 
 
         return proxy
 

@@ -28,3 +28,9 @@
     - Add set() and options() to component config
     - Remove getter mapping, use config 
     - Release 1.0.4
+
+2026-03-14  Todd Valentic
+    - Remove dependency on humanfriendly. It is no longer maintained.
+    - Add local parse_size function
+    - Update pyproject.toml to use uv
+    - Release 1.0.5

@@ -19,6 +19,10 @@
 #   2023-07-24  Todd Valentic
 #               Add Rate.nexttime()
 #
+#   2026-03-14  Todd Valentic
+#               Remove humanfriendly dependenace (no longer maintained).
+#               Add local parse_size() function
+#
 ##########################################################################
 
 import configparser as cp
@@ -31,8 +35,63 @@ from typing import Union
 
 from dateutil.relativedelta import relativedelta
 import dateutil.parser
-import humanfriendly
 import pytimeparse2 as pytimeparse
+
+
+# -------------------------------------------------------------------------
+#   Parse size/unit strings (i.e. 10 MB)
+# -------------------------------------------------------------------------
+
+
+def size_unit(scale, symbol, name):
+    """Return dictionary mapping symbol/name to scale"""
+    return {symbol.lower(): scale, name.lower(): scale}
+
+
+scales = {}
+
+scales.update(size_unit(1, "", ""))
+scales.update(size_unit(1, "B", "byte"))
+
+scales.update(size_unit(1000**1, "KB", "kilobyte"))
+scales.update(size_unit(1000**2, "MB", "megabyte"))
+scales.update(size_unit(1000**3, "GB", "gigabyte"))
+scales.update(size_unit(1000**4, "TB", "terabyte"))
+scales.update(size_unit(1000**5, "PB", "petabyte"))
+scales.update(size_unit(1000**6, "EB", "exabyte"))
+scales.update(size_unit(1000**7, "ZB", "zettabyte"))
+scales.update(size_unit(1000**8, "YB", "yottabyte"))
+
+scales.update(size_unit(1024**1, "KiB", "kibibyte"))
+scales.update(size_unit(1024**2, "MiB", "mebibyte"))
+scales.update(size_unit(1024**3, "GiB", "gibibyte"))
+scales.update(size_unit(1024**4, "TiB", "tebibyte"))
+scales.update(size_unit(1024**5, "PiB", "pebibyte"))
+scales.update(size_unit(1024**6, "EiB", "exbibyte"))
+scales.update(size_unit(1024**7, "ZiB", "zebibyte"))
+scales.update(size_unit(1024**8, "YiB", "yobibyte"))
+
+
+def parse_size(size_str):
+    """Parse a human readable data size and return the number of bytes"""
+
+    regex = r"([-+]?(?:(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?))\s*(.*)"
+
+    size_str = size_str.strip().replace(",", "").rstrip("s").lower()
+
+    match = re.match(regex, size_str)
+
+    if not match:
+        raise ValueError(f"Invalid format: '{size_str}'")
+
+    value_str, unit = match.groups()
+    value = float(value_str)
+
+    if unit not in scales:
+        raise ValueError(f"Unknown unit: '{unit}'")
+
+    return int(value * scales[unit])
+
 
 # -------------------------------------------------------------------------
 #   Types
@@ -83,18 +142,19 @@ class Rate:
         )
 
     def nexttime(self, curtime: datetime.datetime):
-        """Seconds until next deadline""" 
+        """Seconds until next deadline"""
 
         period = self.period.total_seconds()
 
         if self.sync:
-            timestamp = (curtime - self.offset).timestamp() 
+            timestamp = (curtime - self.offset).timestamp()
             wait = period - timestamp % period
         else:
             wait = period
 
-        return datetime.timedelta(seconds = wait)
-        
+        return datetime.timedelta(seconds=wait)
+
+
 # -------------------------------------------------------------------------
 #   Converters
 # -------------------------------------------------------------------------
@@ -138,8 +198,7 @@ def as_set(value, sep=None, conv=str):
 
 def as_bytes(value):
     """Convert to bytes"""
-
-    return humanfriendly.parse_size(str(value))
+    return parse_size(str(value))
 
 
 def as_path(value):

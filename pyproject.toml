@@ -1,52 +1,40 @@
-[build-system]
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"
-
 [project]
-
-name = "sapphire_config"
-dynamic = ["version"]
+name = "sapphire-config"
+version = "1.0.5"
 description = "Sapphire Configuration Parser"
 readme = "README.md"
-requires-python= ">= 3.9"
-license = { file = "LICENSE" }
+license = "MIT"
+license_files = [ "LICENCSE" ]
 authors = [
-    { name= 'Todd Valentic', email='todd.valentic@gmail.com' }
+    { name = "Todd Valentic", email = "todd.valentic@gmail.com" }
+]
+requires-python = ">=3.9"
+dependencies = [
+    "python-dateutil>=2.9.0.post0",
+    "pytimeparse2>=1.7.1",
 ]
 
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License", 
+    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent"
 ]
 
-dependencies = [
-    "python-dateutil",
-    "humanfriendly",
-    "pytimeparse2"
-]
-
-[project.optional-dependencies]
-devel = [
-    'build',
-    'black',
-    'pyfakefs',
-    'pylint',
-    'pytest',
-    'ruff'
-    ]
 
 [project.urls]
 Homepage="https://github.com/valentic/sapphire-config"
-
-[tool.setuptools.packages.find]
-where = ["src"]
-
-[tool.setuptools.dynamic]
-version = {attr = "sapphire_config.metadata.__version__"}
 
 [tool.pytest.ini_options]
 addopts = [
     "--import-mode=importlib"
 ]
 
+[build-system]
+requires = ["uv_build>=0.10.10,<0.11.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.2",
+    "ruff>=0.15.6",
+]

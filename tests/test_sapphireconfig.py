@@ -281,13 +281,42 @@ def test_get_set_sep():
     result = config['section'].get_set('set', sep=',')
     assert result == {'1', '2', '3'}
 
-def test_get_bytes():
+test_get_bytes_data_good = [
+    ("42", 42),
+    ("13b", 13),
+    ("5 bytes", 5),
+    ("1 KB", 1000),
+    ("1 kilobyte", 1000),
+    ("1 KiB", 1024),
+    ("1.5 GB ", 1500000000),
+    ("1.5 GiB", 1610612736),
+]
+
+@pytest.mark.parametrize("test_input,expected", test_get_bytes_data_good)
+def test_get_bytes_good(test_input, expected):
     config = sapphire.Parser()
     config['section'] = {}
-    config['section']['bytes'] = '100 MiB'
+    config['section']['bytes'] = test_input 
 
     result = config['section'].get_bytes('bytes')
-    assert result == 104857600
+    assert result == expected 
+
+test_get_bytes_data_bad = [
+    ("GB 100", 0),
+    ("GB", 0),
+    ("GB GB", 0),
+    ("", 0),
+]
+
+@pytest.mark.parametrize("test_input,expected", test_get_bytes_data_bad)
+def test_get_bytes_bad(test_input, expected):
+    config = sapphire.Parser()
+    config['section'] = {}
+    config['section']['bytes'] = test_input 
+
+    with pytest.raises(ValueError):
+        result = config['section'].get_bytes('bytes')
+
 
 def test_get_datetime():
     config = sapphire.Parser()
